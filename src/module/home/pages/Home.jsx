@@ -3,11 +3,12 @@ import { ModulesLayout } from "../../ui/ModulesLayout"
 import "./Home.css"
 import React, { useState, useEffect } from "react"
 import { useAuthStore } from "../../../store/auth/useAuthStore"
+import { DeliveryReport } from "../components/DeliveryReport"
 
 export const Home = () => {
   const navigate = useNavigate()
   const [hoveredItem, setHoveredItem] = useState(null)
-  const {user} = useAuthStore();
+  const { user } = useAuthStore()
 
   const handleMouseEnter = (index) => {
     setHoveredItem(index)
@@ -24,7 +25,9 @@ export const Home = () => {
     <ModulesLayout>
       <div className="home">
         <div className="home-welcome">
-          <h1>¡Bienvenido {user.first_name} {user.last_name}!</h1>
+          <h1>
+            ¡Bienvenido {user.first_name} {user.last_name}!
+          </h1>
 
           <div className="home-welcome-modules">
             <div
@@ -77,18 +80,21 @@ export const Home = () => {
               <img src="/img/userSettings.png" alt="" />
             </div>
           </div>
+      <DeliveryReport />
+
         </div>
         <div className="container">
-        <div className="home-information">
-          <img src="/img/logo.png" alt="paquete" />
-          <h3>Administra tus paquetes</h3>
-          <span>
-            Aquí puedes controlar y gestionar repartidores, paquetes, usuarios y
-            detalles de tu cuenta.
-          </span>
-        </div>
+          <div className="home-information">
+            <img src="/img/logo.png" alt="paquete" />
+            <h3>Administra tus paquetes</h3>
+            <span>
+              Aquí puedes controlar y gestionar repartidores, paquetes, usuarios
+              y detalles de tu cuenta.
+            </span>
+          </div>
         </div>
       </div>
+
     </ModulesLayout>
   )
 }
