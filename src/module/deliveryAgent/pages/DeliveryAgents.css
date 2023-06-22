@@ -1,0 +1,38 @@
+.DeliveryAgents {
+  width: 90%;
+  height: 500px;
+  display: flex;
+  justify-content: start;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+}
+.table-globlal-delivery {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+.table-globlal-delivery thead {
+  background: #003e69;
+  color: rgb(255, 255, 255);
+  height: 35px;
+  margin-bottom: 5px;
+  position: sticky;
+  top: 1px;
+  margin: 0 0 0 0;
+}
+.table-globlal-delivery tr:nth-child(2n) {
+  background: rgb(230, 230, 230);
+}
+
+.table-globlal-delivery th,
+.table-globlal-delivery td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+}
+
+.table-globlal-delivery th {
+  background-color: #003e69;
+  font-weight: bold;
+}

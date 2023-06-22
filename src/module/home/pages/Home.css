@@ -1,0 +1,80 @@
+.home {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+}
+.container {
+    background-color: rgba(235, 235, 235, 0.8);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    border-radius: 30px;
+    width: auto;
+    height: auto;
+    padding: 30px;
+    text-align: center;
+}
+.home-welcome {
+    background-color: rgba(235, 235, 235, 0.8);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    border-radius: 30px;
+    width: 60%;
+    height: 500px;
+    text-align: center;
+}
+
+.home-welcome h1 {
+    margin: 0;
+    margin-top: 40px;
+}
+
+.home-welcome-modules {
+    width: 100%;
+    height: 300px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: flex-end;
+}
+
+.home-welcome-modules-item {
+    width: 200px;
+    height: 200px;
+    border-radius: 30px;
+    background-color: rgba(235, 235, 235, 0.9);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.home-welcome-modules-item:hover {
+    background: rgb(88, 110, 146);
+    color: aliceblue;
+}
+
+
+.home-welcome-modules-item img {
+    width: 100px;
+    height: 100px;
+}
+
+
+.home-information {
+    color: rgb(0, 0, 0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.home-information h3 {
+    margin: 0;
+    margin-bottom: 20px;
+}
+
+.home-information img {
+    width: 200px;
+    padding: 20px;
+}
+
+.home-information span {
+    width: 200px;
+    font-size: 19px;
+    text-align: center;
+}
