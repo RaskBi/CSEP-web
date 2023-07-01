@@ -62,12 +62,12 @@ export const Employees = () => {
 
   return (
     <ModulesLayout>
-      <div className="packages-header">
-        <div className="packages-header-left">
+      <div className="emloyees-header">
+        <div className="emloyees-header-left">
           <h2>Empleados</h2>
           <button onClick={onCreateEmployee}>Crear Empleados</button>
         </div>
-        <div className="packages-header-rigth">
+        <div className="emloyees-header-rigth">
           <input
             type="text"
             placeholder="Buscar Empleados"
@@ -89,8 +89,8 @@ export const Employees = () => {
           />
         </div>
       </div>
-      <div className="packages-content">
-        <table className="packages-content-table">
+      <div className="emloyees-content">
+        <table className="emloyees-content-table">
           <thead>
             <tr>
               <th>Username</th>
