@@ -1,18 +1,40 @@
 import { useEffect, useState } from "react"
+import Select from "react-select"
 import { useNavigate } from "react-router-dom"
 import { usePackagesStore } from "../../../store/modules/hooks/usePackagesStore"
 import { ModulesLayout } from "../../ui/ModulesLayout"
 import { LoadingSpinner } from "../../../components"
+import { useGetComboBox } from "../helpers/useGetComboBox"
 import ReactPaginate from "react-paginate"
 import "./Packages.css"
 
 export const Packages = () => {
-  const { packages, isLoading, startLoadPackages, startSetAcitvePackage } =
-    usePackagesStore()
+  const { remitente, repartidor: repart} = useGetComboBox()
+  const [selectedOption, setSelectedOption] = useState(null)
+  const [selectRepartidor, setSelectRepartidor] = useState({})
+  const [selectUsuario, setSelectUsuario] = useState({})
+
+  const handleChange = (option) => {
+    setSelectedOption(option)
+  }
+
+  const {
+    packages,
+    isLoading,
+    repartidor_add,
+    user_add,
+    startLoadPackages,
+    startSetAcitvePackage,
+    startReport,
+    startReportR,
+    startReportU,
+  } = usePackagesStore()
   const navigate = useNavigate()
   const [searchTerm, setSearchTerm] = useState("")
   const [currentPage, setCurrentPage] = useState(0)
   const itemsPerPage = 5
+  const [fechaInicio, setFechaInicio] = useState("")
+  const [fechaFin, setFechaFin] = useState("")
 
   const filteredData = packages.filter(
     (item) =>
@@ -28,9 +50,9 @@ export const Packages = () => {
     setCurrentPage(selected)
   }
 
-  const offset = currentPage * itemsPerPage;
-  const pageCount = Math.ceil(filteredData.length / itemsPerPage);
-  const dataToShow = filteredData.slice(offset, offset + itemsPerPage);
+  const offset = currentPage * itemsPerPage
+  const pageCount = Math.ceil(filteredData.length / itemsPerPage)
+  const dataToShow = filteredData.slice(offset, offset + itemsPerPage)
 
   const onCreatePackage = () => {
     startSetAcitvePackage({
@@ -52,10 +74,45 @@ export const Packages = () => {
     startSetAcitvePackage(rowData)
     navigate("form")
   }
+  const handleFechaInicioChange = (event) => {
+    setFechaInicio(event.target.value)
+  }
+
+  const handleFechaFinChange = (event) => {
+    setFechaFin(event.target.value)
+  }
+
+  const handleReportClick = () => {
+    const reportData = {
+      fecha_inicio: fechaInicio,
+      fecha_fin: fechaFin,
+    }
+    startReport(reportData)
+  }
+  const submitReport = () => {
+    const data = {
+      repartidor_add: selectRepartidor,
+    }
+    startReportR(data)
+  }
+
+  const submitReportU = () => {
+    const data = {
+      user_add: selectUsuario,
+    }
+    startReportU(data)
+  }
 
   useEffect(() => {
     startLoadPackages()
     document.title = "Paquetes"
+    const today = new Date()
+    const year = today.getFullYear()
+    const month = String(today.getMonth() + 1).padStart(2, "0")
+    const day = String(today.getDate()).padStart(2, "0")
+    const formattedDate = `${year}-${month}-${day}`
+    setFechaInicio(formattedDate)
+    setFechaFin(formattedDate)
   }, [])
 
   if (isLoading) {
@@ -66,9 +123,91 @@ export const Packages = () => {
     <ModulesLayout>
       <div className="packages-header">
         <div className="packages-header-left">
-          <h2>Paquetes</h2>
-          <button onClick={onCreatePackage}>Crear paquete</button>
+          <div>
+            <h2>Paquetes</h2>
+            <button onClick={onCreatePackage}>Crear paquete</button>
+          </div>
+          <div className="packages-header-leftR-reporte">
+            <div className="comboboxFiltro">
+              <Select
+                value={selectedOption}
+                placeholder="Filtrar reporte por..."
+                onChange={handleChange}
+                options={[
+                  { value: "fecha", label: "Fecha" },
+                  { value: "repartidor", label: "Repartidor" },
+                  { value: "usuario", label: "Remitente" },
+                ]}
+              />
+              <div className="filtro">
+                {selectedOption && selectedOption.value === "fecha" && (
+                  <div className="fecha">
+                    <div className="packages-header-leftR-report">
+                      <div className="input-group">
+                        <label htmlFor="fechaInicio">Fecha de inicio:</label>
+                        <input
+                          type="date"
+                          id="fechaInicio"
+                          value={fechaInicio}
+                          onChange={handleFechaInicioChange}
+                        />
+                      </div>
+                      <div className="input-group">
+                        <label htmlFor="fechaFin">Fecha de fin:</label>
+                        <input
+                          type="date"
+                          id="fechaFin"
+                          value={fechaFin}
+                          onChange={handleFechaFinChange}
+                        />
+                      </div>
+                      <button onClick={handleReportClick}>
+                        Generar Reporte
+                      </button>
+                    </div>
+                  </div>
+                )}
+                {selectedOption && selectedOption.value === "repartidor" && (
+                  <div className="repartidor">
+                    <div className="packages-header-leftR-report-repartidor">
+                      <label>Repartidor</label>
+                      <Select
+                        value={repartidor_add}
+                        options={repart}
+                        className="packages-select-search-r"
+                        placeholder="Repartidor"
+                        onChange={setSelectRepartidor}
+                        style={{
+                          width: "200px !important",
+                        }}
+                      />
+                      <button onClick={submitReport}>Generar Reporte</button>
+                    </div>
+                  </div>
+                )}
+                {selectedOption && selectedOption.value === "usuario" && (
+                  <div className="usuario">
+                    <div className="packages-header-leftR-report-repartidor">
+                      <label>Remitente</label>
+                      <Select
+                        value={user_add}
+                        options={remitente}
+                        className="packages-select-search-r"
+                        placeholder="Remitente"
+                        onChange={setSelectUsuario}
+                        style={{
+                          width: "200px !important",
+                        }}
+                      />
+                      <button onClick={submitReportU}>Generar Reporte</button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
+
         <div className="packages-header-rigth">
           <input
             type="text"
@@ -77,18 +216,18 @@ export const Packages = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <ReactPaginate
-          previousLabel={"<"}
-          nextLabel={">"}
-          pageCount={pageCount}
-          pageRangeDisplayed={5}
-          marginPagesDisplayed={1}
-          onPageChange={onPageChange}
-          containerClassName={"pagination"}
-          previousLinkClassName={"pagination__link"}
-          nextLinkClassName={"pagination__link"}
-          disabledClassName={"pagination__link--disabled"}
-          activeClassName={"pagination__link--active"}
-        />
+            previousLabel={"<"}
+            nextLabel={">"}
+            pageCount={pageCount}
+            pageRangeDisplayed={5}
+            marginPagesDisplayed={1}
+            onPageChange={onPageChange}
+            containerClassName={"pagination"}
+            previousLinkClassName={"pagination__link"}
+            nextLinkClassName={"pagination__link"}
+            disabledClassName={"pagination__link--disabled"}
+            activeClassName={"pagination__link--active"}
+          />
         </div>
       </div>
       <div className="packages-content">
@@ -106,7 +245,7 @@ export const Packages = () => {
               <th>Hora de envío</th>
               <th>Fecha de recepción</th>
               <th>Hora de recepción</th>
-              <th>Foto</th>
+              <th>Foto entrega</th>
               <th>Opciones</th>
             </tr>
           </thead>
@@ -115,17 +254,43 @@ export const Packages = () => {
               <tr key={pack.id}>
                 <td>{pack.paq_numero}</td>
                 <td>{pack.paq_estado}</td>
-                <td>{pack.user}</td>
-                <td>{pack.repartidor}</td>
+                <td>{pack.full_name_user}</td>
+                <td>{pack.full_name_repartidor}</td>
                 <td>{pack.paq_direccion}</td>
                 <td>{pack.paq_telefono}</td>
                 <td>${pack.paq_precio}</td>
                 <td>{pack.paq_fechaCreacion}</td>
                 <td>{pack.paq_horaCreacion}</td>
-                <td>{pack.paq_fechaConfirmacion==null?<img width="70px" src="https://i.gifer.com/origin/6a/6a2dfb96f278692f0900cc08975efe0e_w200.webp"/>: pack.paq_fechaConfirmacion }</td>
-                <td>{pack.paq_horaConfirmacion==null?<img width="70px" src="https://i.gifer.com/origin/6a/6a2dfb96f278692f0900cc08975efe0e_w200.webp"/>: pack.paq_horaConfirmacion }</td>
                 <td>
-                  <img id="img-packages" src={pack.paq_imagen==null? "/img/paquete.png" :pack.paq_imagen} alt="imagen" />
+                  {pack.paq_fechaConfirmacion == null ? (
+                    <img
+                      width="70px"
+                      src="https://i.gifer.com/origin/6a/6a2dfb96f278692f0900cc08975efe0e_w200.webp"
+                    />
+                  ) : (
+                    pack.paq_fechaConfirmacion
+                  )}
+                </td>
+                <td>
+                  {pack.paq_horaConfirmacion == null ? (
+                    <img
+                      width="70px"
+                      src="https://i.gifer.com/origin/6a/6a2dfb96f278692f0900cc08975efe0e_w200.webp"
+                    />
+                  ) : (
+                    pack.paq_horaConfirmacion
+                  )}
+                </td>
+                <td>
+                  <img
+                    id="img-packages"
+                    src={
+                      pack.paq_imagen == null
+                        ? "/img/paquete.png"
+                        : pack.paq_imagen
+                    }
+                    alt="imagen"
+                  />
                 </td>
                 <td>
                   <span
@@ -142,7 +307,6 @@ export const Packages = () => {
             ))}
           </tbody>
         </table>
-
       </div>
     </ModulesLayout>
   )

@@ -62,12 +62,12 @@ export const DeliveryAgents = () => {
 
   return (
     <ModulesLayout>
-      <div className="packages-header">
-        <div className="packages-header-left">
+      <div className="delibery-header">
+        <div className="delibery-header-left">
           <h2>Repartidores</h2>
           <button onClick={onCreateDeliveryAgent}>Crear repartidores</button>
         </div>
-        <div className="packages-header-rigth">
+        <div className="delibery-header-rigth">
           <input
             type="text"
             placeholder="Buscar repartidores"
@@ -89,8 +89,8 @@ export const DeliveryAgents = () => {
           />
         </div>
       </div>
-      <div className="packages-content">
-        <table className="packages-content-table">
+      <div className="delibery-content">
+        <table className="delibery-content-table">
           <thead>
             <tr>
               <th>Username</th>
