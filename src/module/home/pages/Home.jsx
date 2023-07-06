@@ -3,7 +3,6 @@ import { ModulesLayout } from "../../ui/ModulesLayout"
 import "./Home.css"
 import React, { useState, useEffect } from "react"
 import { useAuthStore } from "../../../store/auth/useAuthStore"
-import { DeliveryReport } from "../components/DeliveryReport"
 
 export const Home = () => {
   const navigate = useNavigate()
@@ -80,8 +79,6 @@ export const Home = () => {
               <img src="/img/userSettings.png" alt="" />
             </div>
           </div>
-      <DeliveryReport />
-
         </div>
         <div className="container">
           <div className="home-information">
@@ -94,7 +91,6 @@ export const Home = () => {
           </div>
         </div>
       </div>
-
     </ModulesLayout>
   )
 }

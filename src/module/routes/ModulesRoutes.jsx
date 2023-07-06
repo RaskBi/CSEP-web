@@ -7,6 +7,7 @@ import { Employees } from "../employees"
 import { DeliveryAgents } from "../deliveryAgent/pages/DeliveryAgents"
 import { DeliveryAgentsForm } from "../deliveryAgent/pages/DeliveryAgentsForm"
 import { EmployeesForm } from "../employees/pages/EmployeesForm"
+import { Charts } from "../charts/pages/Charts"
 
 export const ModulesRoutes = () => {
     return (
@@ -20,6 +21,7 @@ export const ModulesRoutes = () => {
             <Route path="employees/formEmployee" element={<EmployeesForm/>} />
             <Route path="deliveryAgents" element={<DeliveryAgents/>} />
             <Route path="deliveryAgents/formDelivery" element={<DeliveryAgentsForm/>} />
+            <Route path="charts" element={<Charts/>} />
             <Route path="/*" element={<Navigate to="/" />} />
         </Routes>
         </>
