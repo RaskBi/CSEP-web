@@ -5,7 +5,6 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 ChartJs.register(Tooltip, Title, ArcElement, Legend)
 
 export const DeliveryReport = ({ labelsChart, dataChart }) => {
-  console.log(labelsChart, dataChart)
 
   const data = {
     labels: labelsChart,

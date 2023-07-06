@@ -12,7 +12,6 @@ export const PasswordRecovery = () => {
   const { email, onInputChange, formState } = useForm(initialValues)
 
   const onPasswordRecovery = () => {
-    console.log(formState)
   }
 
   return (

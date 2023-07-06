@@ -6,6 +6,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  Filler,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -14,13 +15,13 @@ ChartJS.register(
   CategoryScale,
   LinearScale,
   BarElement,
+  Filler,
   Title,
   Tooltip,
   Legend
 );
 
 export const PackageType = ({ typeData, valorData }) => {
-  console.log(typeData, valorData)
   
   const data = {
     labels: typeData,

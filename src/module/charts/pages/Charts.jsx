@@ -1,37 +1,76 @@
 import { ModulesLayout } from "../../ui/ModulesLayout"
 import { useGetReportData } from "../../charts/helpers/useGetReportData"
-import { useGetChartTypeData } from "../../charts/helpers/useGetChartTypeData"
 import "./Charts.css"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { DeliveryReport, PackageType } from "../components"
 
 export const Charts = () => {
-  const { packageData, startGetPackages } = useGetReportData()
-  const { typeData, valorData, startGetChartTipo } = useGetChartTypeData()
+  const {
+    packageData,
+    typeData,
+    valorData,
+    startGetPackages,
+    startGetChartTipo,
+  } = useGetReportData()
+
+
+  const today = new Date()
+  const year = today.getFullYear()
+  const month = String(today.getMonth() + 1).padStart(2, "0")
+  const day = String(today.getDate()).padStart(2, "0")
+  const formattedDate = `${year}-${month}-${day}`
+
+
+  /* Fechas */
+  const [fechaIni, setFechaIni] = useState(formattedDate)
+  const [fechaFin, setFechaFin] = useState(formattedDate)
+
+
 
   useEffect(() => {
     document.title = "Graficas"
-    startGetPackages()
-    startGetChartTipo()
-  }, [])
+    const filterData = {
+      fecha_inicio: fechaIni,
+      fecha_fin: fechaFin,
+    }
+    if(fechaFin == formattedDate && fechaIni == formattedDate){
+      startGetPackages()
+      startGetChartTipo()
+    }else{
+      startGetPackages(filterData)
+      startGetChartTipo(filterData)
+    }
+  }, [fechaIni,fechaFin])
 
   return (
     <ModulesLayout>
       <div className="content">
         <div className="char">
-        <h1>Graficas</h1>
+          <h1>Graficas</h1>
 
-        <div className="charts">
-          <DeliveryReport
-            labelsChart={["Entregados", "No Entregados"]}
-            dataChart={packageData}
+          <div className="charts">
+            <DeliveryReport
+              labelsChart={["Entregados", "No Entregados"]}
+              dataChart={packageData}
             />
-          <PackageType typeData={typeData} valorData={valorData} />
+            <PackageType typeData={typeData} valorData={valorData} />
+          </div>
         </div>
-            </div>
-        {/*<div className="info">
+        <div className="info">
           <h1>Info</h1>
-        </div>*/}
+          <input
+            type="date"
+            placeholder="Fecha inicial"
+            value={fechaIni}
+            onChange={(e) => setFechaIni(e.target.value)}
+          />
+          <input
+            type="date"
+            placeholder="Fecha final"
+            value={fechaFin}
+            onChange={(e) => setFechaFin(e.target.value)}
+          />
+        </div>
       </div>
     </ModulesLayout>
   )
