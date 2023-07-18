@@ -33,6 +33,7 @@ export const EmployeesForm = () => {
       username,
       email,
       password,
+      cedula,
     } = useForm(initialValues);
   
     const onSubmitEmployees = (event) => {
@@ -97,6 +98,13 @@ export const EmployeesForm = () => {
                   placeholder="Correo"
                   name="email"
                   value={email}
+                  onChange={onInputChange}
+                />
+                <input
+                  type="cedula"
+                  placeholder="Cédula"
+                  name="cedula"
+                  value={cedula}
                   onChange={onInputChange}
                 />
                 {active.id == 0 && (

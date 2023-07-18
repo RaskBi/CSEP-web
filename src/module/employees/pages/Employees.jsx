@@ -16,13 +16,14 @@ export const Employees = () => {
   const navigate = useNavigate()
   const [searchTerm, setSearchTerm] = useState("")
   const [currentPage, setCurrentPage] = useState(0)
-  const itemsPerPage = 7
+  const itemsPerPage = 5
 
   const filteredData = employees.filter(
     (item) =>
       item.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.cedula.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.email.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
@@ -93,9 +94,11 @@ export const Employees = () => {
         <table className="emloyees-content-table">
           <thead>
             <tr>
+              <th>Foto</th>
               <th>Username</th>
               <th>Nombre</th>
               <th>Apellido</th>
+              <th>Cedula</th>
               <th>Correo</th>
               <th>Opciones</th>
             </tr>
@@ -103,9 +106,11 @@ export const Employees = () => {
           <tbody>
             {dataToShow.map((rep) => (
               <tr key={rep.id}>
+                <td><img id="img-packages" src={rep.imagen} style={{ borderRadius: "100%" }} alt=""/></td>
                 <td>{rep.username}</td>
                 <td>{rep.first_name}</td>
                 <td>{rep.last_name}</td>
+                <td>{rep.cedula}</td>
                 <td>{rep.email}</td>
                 <td>
                   {/*<span

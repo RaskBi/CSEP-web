@@ -26,7 +26,7 @@ export const Login = () => {
   return (
     <AuthLayout>
       <form onSubmit={onLogin} className="Login-form">
-        <img src="/public/img/logo.png" alt="logo" />
+        <img src="/img/logo.png" alt="logo" />
         <input
           type="text"
           placeholder="Ingrese su usuario"

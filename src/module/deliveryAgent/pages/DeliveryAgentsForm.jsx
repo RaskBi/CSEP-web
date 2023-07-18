@@ -33,6 +33,7 @@ export const DeliveryAgentsForm = () => {
       username,
       email,
       password,
+      cedula,
     } = useForm(initialValues);
   
     const onSubmitDeliveryAgents = (event) => {
@@ -97,6 +98,13 @@ export const DeliveryAgentsForm = () => {
                   placeholder="Correo"
                   name="email"
                   value={email}
+                  onChange={onInputChange}
+                />
+                <input
+                  type="cedula"
+                  placeholder="Cédula"
+                  name="cedula"
+                  value={cedula}
                   onChange={onInputChange}
                 />
                 {active.id == 0 && (
