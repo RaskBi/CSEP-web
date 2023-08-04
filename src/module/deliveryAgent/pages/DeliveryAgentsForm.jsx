@@ -1,38 +1,32 @@
-import { useState } from "react"
+import { useState, useMemo,useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 
-import { ModulesLayout } from "../../ui/ModulesLayout"
-import { useEffect } from "react"
 import { useForm } from "../../../hooks/useForm"
-import { useDeliveryAgentsStore } from "../../../store/modules/hooks/useDeliveryAgentsStore"
-import "./DeliveryAgentsForm.css"
-import { useMemo } from "react"
 import { LoadingSpinner } from "../../../components"
+import { ModulesLayout } from "../../ui/ModulesLayout"
+import { useDeliveryAgentsStore } from "../../../store/modules/hooks/useDeliveryAgentsStore"
+
+import "./DeliveryAgentsForm.css"
 
 export const DeliveryAgentsForm = () => {
   const [initialValues, setInitialValues] = useState({
     id: 0,
-    first_name: "",
-    last_name: "",
-    username: "",
-    email: "",
     cedula_ruc: "",
-    password: "",
+    email: "",
+    first_name: "",
     imagen_upload: { change: false, b64: "", ext: "" },
     imagen: "",
+    last_name: "",
+    password: "",
+    username: "",
   })
+  const [userNameData, setUserNameData] = useState("")
 
   const navigate = useNavigate()
 
-  const { active, deliveryAgents, isLoading, startSavingDeliveryAgents } =
-    useDeliveryAgentsStore()
-  const [userNameData, setUserNameData] = useState("")
+  const { active, deliveryAgents, isLoading, startSavingDeliveryAgents } = useDeliveryAgentsStore()
 
   const {
-    formState,
-    onInputChange,
-    onInputChangeImage,
-    selectedImage,
     first_name,
     last_name,
     email,
@@ -40,13 +34,16 @@ export const DeliveryAgentsForm = () => {
     cedula_ruc,
     imagen,
     imagen_upload,
+    formState,
+    onInputChange,
+    onInputChangeImage,
+    selectedImage,
   } = useForm(initialValues)
 
-  
 
   const onSubmitDeliveryAgents = (event) => {
     event.preventDefault()
-    console.log(formState)
+    console.log({ ...formState, username: userNameData})
     startSavingDeliveryAgents({ ...formState, username: userNameData})
   }
   
@@ -77,8 +74,6 @@ export const DeliveryAgentsForm = () => {
   if (isLoading === true) {
     return <LoadingSpinner />
   }
-  
-  console.log(formState)
 
   return (
     <ModulesLayout>

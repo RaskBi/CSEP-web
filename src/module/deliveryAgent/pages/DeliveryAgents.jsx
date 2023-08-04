@@ -38,11 +38,14 @@ export const DeliveryAgents = () => {
   const onCreateDeliveryAgent = () => {
     startSetAcitveDeliveryAgent({
       id: 0,
-      first_name: "",
-      last_name: "",
-      username: "",
+      cedula: "",
       email: "",
+      first_name: "",
+      imagen:"",
+      last_name: "",
       password: "",
+      imagen_upload: { change: false, b64: "", ext: "" },
+      username: "",
     })
     navigate("formDelivery")
   }
