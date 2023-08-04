@@ -35,7 +35,7 @@ export const CostChart = ({ costLabel,costData }) => {
       
       title: {
         display: true,
-        text: "Costos de paquetes",
+        text: "Costos de paquetes $",
       },
       datalabels: {
         color: 'black',

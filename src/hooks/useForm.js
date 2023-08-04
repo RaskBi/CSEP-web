@@ -4,6 +4,7 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
 
     const [formState, setFormState] = useState(initialForm);
     const [formValidation, setFormValidation] = useState({});
+    const [selectedImage, setSelectedImage] = useState(null); // Agregamos el estado para la imagen seleccionada
 
     useEffect(() => {
         createValidators();
@@ -54,19 +55,28 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
     }
     const onInputChangeImage = ({ target }) => {
         const { name, files } = target;
-        const reader = new FileReader()
-        reader.readAsDataURL(files[0]);
-        reader.onload = function () {
-            var base64 = reader.result
-            var point = base64.search("base64,")
-            var trans = base64.slice(point + 7)
+        if (files.length > 0) {
+          const reader = new FileReader();
+          const extension = files[0].name.split('.');
+          reader.readAsDataURL(files[0]);
+          reader.onload = function () {
+            var base64 = reader.result;
+            var point = base64.search('base64,');
+            var trans = base64.slice(point + 7);
             setFormState({
-                ...formState,
-                image_change:true,
-                [name]: trans
+              ...formState,
+              [name]: { change: true, b64: trans, ext: extension[extension.length - 1] },
             });
+            setSelectedImage(trans); // Actualizamos el estado de la imagen seleccionada
+          };
+        } else {
+          setFormState({
+            ...formState,
+            [name]: { change: false, b64: '', ext: '' },
+          });
+          setSelectedImage(null); // Borramos el estado de la imagen seleccionada
         }
-    }
+      };
 
     const onResetForm = () => {
         setFormState(initialForm);
@@ -93,6 +103,7 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
         onInputChangeMultiselect,
         onInputSelect,
         onResetForm,
+        selectedImage,
         ...formValidation,
         isFormValid
     }

@@ -28,8 +28,21 @@ export const DeliveryReport = ({ labelsChart, dataChart }) => {
         display: true,
         text: "Paquetes",
       },
+      tooltip: {
+        enabled: false
+      },
       datalabels: {
         color: 'black',
+        formatter: (value, context) =>{
+          const datapoints = context.chart.data.datasets[0].data;
+          function totalSum(total, datapoint) {
+            return total + datapoint;
+          }
+          const totalvalue = datapoints.reduce(totalSum, 0);
+          const percentageValue = (value / totalvalue * 100).toFixed(1);
+          const display = [`${value}`,`${percentageValue}%`]
+          return display;
+        }
       }
     },
     maintainAspectRatio: false,

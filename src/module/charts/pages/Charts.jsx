@@ -58,34 +58,39 @@ export const Charts = () => {
   }, [])
 
   const handleGeneratePdf = () => {
-    const elementPDF = document.getElementById("pdf")
-    var h2p = new library()
-    h2p.addScript(h2p.add().html2pdf)
+    const elementPDF = document.getElementById('pdf');
+    var h2p = new html2pdf(); // Aquí se debe crear una instancia de html2pdf
+
     const opt = {
-      filename: "Graficas" + ".pdf",
-      image: { type: "jpeg", quality: 0.85 },
+      filename: 'Graficas.pdf', // Puedes eliminar el ".pdf" del nombre, ya que se establecerá el formato automáticamente
+      image: { type: 'jpeg', quality: 1.0 },
       html2canvas: {
-        scale: 3,
+        scale:  3,
         logging: true,
         letterRendering: true,
         useCORS: true,
       },
       jsPDF: {
-        unit: "in",
-        format: "a4",
-        orientation: "l",
+        unit: 'in',
+        format: [5, 16],
+        orientation: 'l',
       },
-    }
-    html2pdf().set(opt).from(elementPDF).toPdf().save()
-  }
+    };
+
+    // En lugar de guardar el PDF directamente, creamos un blob y lo abrimos en una nueva pestaña
+    html2pdf().set(opt).from(elementPDF).toPdf().output('blob').then((pdfBlob) => {
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+      window.open(pdfUrl, '_blank'); // Abrir el PDF en una nueva pestaña
+    });
+  };
 
   return (
     <ModulesLayout>
-      <div className="content">
+      <div id="pdf" className="content">
         <div className="char">
           <h1>Gráficas</h1>
 
-          <div id="pdf" className="charts">
+          <div className="charts">
             <DeliveryReport
               labelsChart={["Entregados", "No Entregados"]}
               dataChart={packageData}

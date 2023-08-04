@@ -74,9 +74,12 @@ export const Home = () => {
               }`}
               onMouseEnter={() => handleMouseEnter(3)}
               onMouseLeave={handleMouseLeave}
+              onClick={() => {
+                navigate("charts")
+              }}
             >
-              <h4>Cuenta</h4>
-              <img src="/img/userSettings.png" alt="" />
+              <h4>Gráficas</h4>
+              <img src="/img/charts.png" alt="" />
             </div>
           </div>
         </div>

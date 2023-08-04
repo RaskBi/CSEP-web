@@ -14,6 +14,18 @@ export const Packages = () => {
   const [selectRepartidor, setSelectRepartidor] = useState({})
   const [selectUsuario, setSelectUsuario] = useState({})
 
+  const [selectedPackage, setSelectedPackage] = useState(null);
+  const [isBoxOpen, setIsBoxOpen] = useState(false);
+
+  const handleRowClick = (pack) => {
+    setSelectedPackage(pack);
+    setIsBoxOpen(true);
+  };
+
+  const onCloseBox = () => {
+    setIsBoxOpen(false);
+  };
+
   const handleChange = (option) => {
     setSelectedOption(option)
   }
@@ -235,6 +247,7 @@ export const Packages = () => {
           <thead>
             <tr>
               <th>Guia</th>
+              <th>BarCode</th>
               <th>Estado</th>
               <th>Remitente</th>
               <th>Repartidor</th>
@@ -251,8 +264,12 @@ export const Packages = () => {
           </thead>
           <tbody>
             {dataToShow.map((pack) => (
-              <tr key={pack.id}>
-                <td>{pack.paq_numero}</td>
+              <tr key={pack.id} >
+                <td onClick={() => handleRowClick(pack)}>{pack.paq_numero}</td>
+                <td><a href={pack.paq_barCode} target="_blank"><img
+                      id="bar-packages"
+                      src={pack.paq_barCode}
+                    /></a></td>
                 <td>{pack.paq_estado}</td>
                 <td>{pack.full_name_user}</td>
                 <td>{pack.full_name_repartidor}</td>
@@ -265,7 +282,7 @@ export const Packages = () => {
                   {pack.paq_fechaConfirmacion == null ? (
                     <img
                       width="70px"
-                      src="https://i.gifer.com/origin/6a/6a2dfb96f278692f0900cc08975efe0e_w200.webp"
+                      src="https://media.tenor.com/se7cU4QJ0KAAAAAi/delivery.gif"
                     />
                   ) : (
                     pack.paq_fechaConfirmacion
@@ -275,7 +292,7 @@ export const Packages = () => {
                   {pack.paq_horaConfirmacion == null ? (
                     <img
                       width="70px"
-                      src="https://i.gifer.com/origin/6a/6a2dfb96f278692f0900cc08975efe0e_w200.webp"
+                      src="https://media.tenor.com/se7cU4QJ0KAAAAAi/delivery.gif"
                     />
                   ) : (
                     pack.paq_horaConfirmacion
@@ -308,6 +325,38 @@ export const Packages = () => {
           </tbody>
         </table>
       </div>
+      {/* Cuadro modal para mostrar los detalles del paquete seleccionado */}
+      {isBoxOpen && selectedPackage && (
+        <div className="modal-box">
+          <div className="modal-content">
+            <h2>Detalles del Paquete</h2>
+            <div className="modal-content-columns">
+              <div className="modal-column">
+                <p><strong>Guia:</strong> {selectedPackage.paq_numero}</p>
+                <p><strong>Estado:</strong> {selectedPackage.paq_estado}</p>
+                <p><strong>Remitente:</strong> {selectedPackage.full_name_user}</p>
+                <p><strong>Repartidor:</strong> {selectedPackage.full_name_repartidor}</p>
+                <p><strong>Dirección:</strong> {selectedPackage.paq_direccion}</p>
+                <p><strong>Teléfono:</strong> {selectedPackage.paq_telefono}</p>
+                <p><strong>Costo:</strong> ${selectedPackage.paq_precio}</p>
+              </div>
+              <div className="modal-column">
+                <p><strong>Fecha de envío:</strong> {selectedPackage.paq_fechaCreacion}</p>
+                <p><strong>Hora de envío:</strong> {selectedPackage.paq_horaCreacion}</p>
+                <p><strong>Fecha de recepción:</strong> {selectedPackage.paq_fechaConfirmacion || "No disponible"}</p>
+                <p><strong>Hora de recepción:</strong> {selectedPackage.paq_horaConfirmacion || "No disponible"}</p>
+              </div>
+            </div>
+                <p><strong>Foto de entrega:</strong></p>
+                <img
+                  id="img-packages-modal"
+                  src={selectedPackage.paq_imagen === null ? "/img/paquete.png" : selectedPackage.paq_imagen}
+                  alt="imagen"
+                />
+            <button onClick={onCloseBox}>Cerrar</button>
+          </div>
+        </div>
+      )}
     </ModulesLayout>
   )
 }
