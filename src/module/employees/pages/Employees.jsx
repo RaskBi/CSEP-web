@@ -39,11 +39,14 @@ export const Employees = () => {
   const onCreateEmployee = () => {
     startSetAcitveEmployee({
       id: 0,
-      first_name: "",
-      last_name: "",
-      username: "",
+      cedula: "",
       email: "",
+      first_name: "",
+      imagen:"",
+      last_name: "",
       password: "",
+      imagen_upload: { change: false, b64: "", ext: "" },
+      username: "",
     })
     navigate("formEmployee")
   }
@@ -55,7 +58,7 @@ export const Employees = () => {
 
   useEffect(() => {
     startLoadEmployees()
-    document.title = "Empleados"
+    document.title = "Administradores"
   }, [])
 
   if (isLoading === true) {
@@ -66,13 +69,13 @@ export const Employees = () => {
     <ModulesLayout>
       <div className="emloyees-header">
         <div className="emloyees-header-left">
-          <h2>Empleados</h2>
-          <button onClick={onCreateEmployee}>Crear Empleados</button>
+          <h2>Administradores</h2>
+          <button onClick={onCreateEmployee}>Crear Administradores</button>
         </div>
         <div className="emloyees-header-rigth">
           <input
             type="text"
-            placeholder="Buscar Empleados"
+            placeholder="Buscar Administradores"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -101,7 +104,7 @@ export const Employees = () => {
               <th>Apellido</th>
               <th>Cedula</th>
               <th>Correo</th>
-              <th>Opciones</th>
+              {/*<th>Opciones</th>*/}
             </tr>
           </thead>
           <tbody>
@@ -113,8 +116,8 @@ export const Employees = () => {
                 <td>{rep.last_name}</td>
                 <td>{rep.cedula}</td>
                 <td>{rep.email}</td>
-                <td>
-                  {/*<span
+                {/*<td>
+                  <span
                     className="material-symbols-outlined"
                     onClick={() => onUpdateEmployee(rep)}
                   >
@@ -122,8 +125,8 @@ export const Employees = () => {
                   </span>*/}
                   {/*<span className="material-symbols-outlined">
                     disabled_by_default
-                  </span>*/}
-                </td>
+                  </span>
+                </td>*/}
               </tr>
             ))}
           </tbody>

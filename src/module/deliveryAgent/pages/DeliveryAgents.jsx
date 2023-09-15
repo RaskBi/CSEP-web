@@ -103,7 +103,7 @@ export const DeliveryAgents = () => {
               <th>Apellido</th>
               <th>Cedula</th>
               <th>Correo</th>
-              <th>Opciones</th>
+              {/*<th>Opciones</th>*/}
             </tr>
           </thead>
           <tbody>
@@ -115,17 +115,17 @@ export const DeliveryAgents = () => {
                 <td>{rep.last_name}</td>
                 <td>{rep.cedula}</td>
                 <td>{rep.email}</td>
-                <td>
+                {/*<td>
                   <span
                     className="material-symbols-outlined"
                     onClick={() => onUpdateDeliveryAgent(rep)}
                   >
                     edit
                   </span>
-                  {/*<span className="material-symbols-outlined">
+                  <span className="material-symbols-outlined">
                     disabled_by_default
-                  </span>*/}
-                </td>
+                  </span>
+                </td>*/}
               </tr>
             ))}
           </tbody>

@@ -51,7 +51,7 @@ export const EmployeesForm = () => {
   const titleForm = useMemo(() => {
     if (active.id != 0)
       return `Editar empleado ${active.first_name} ${active.last_name}`
-    return "Crear Empleado"
+    return "Crear Administrador"
   }, [])
 
   useEffect(() => {

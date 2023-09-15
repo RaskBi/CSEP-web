@@ -88,7 +88,7 @@ export const Home = () => {
             <img src="/img/logo.png" alt="paquete" />
             <h3>Administra tus paquetes</h3>
             <span>
-              Aquí puedes controlar y gestionar repartidores, paquetes, usuarios
+            <a href="https://docs.google.com/presentation/d/1rhQ0rFeXepUS_GmUQZKTgPT90hRZIAlNIGcM0gHZeZA/edit?usp=sharing" target="_blank" rel="noreferrer">►</a>Aquí puedes controlar y gestionar repartidores, paquetes, usuarios
               y detalles de tu cuenta<a href="https://docs.google.com/document/d/16-QIa0O6A03X8Qj4fDF1Rk5NMe1w4uMH/edit" target="_blank" rel="noreferrer">►</a>.
             </span>
           </div>
