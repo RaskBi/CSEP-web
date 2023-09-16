@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import {
   onAddNewPackage,
+  onDeletePackage,
   onIsLoading,
   onLoadPackages,
   onSendErrorMessage,
@@ -18,10 +19,10 @@ export const usePackagesStore = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const startLoadPackages = async () => {
+  const startLoadPackages = async (paq_status) => {
     dispatch(onIsLoading())
     try {
-      const { data } = await CSEPDeliveryApi.get(`paquete/get/paquete`)
+      const { data } = await CSEPDeliveryApi.get(`paquete/get/paquete/${paq_status}`)
       dispatch(onLoadPackages(data))
     } catch (error) {
       console.log(error)
@@ -158,6 +159,28 @@ export const usePackagesStore = () => {
     }
   };
 
+/**
+ * Protocolo HTTP exirten varios metodos CRUD
+ * GET, POST, PUT, DELETE
+ */
+  const startDeletePackage = async (dataPack) => {
+    startSetAcitvePackage(dataPack);
+    dispatch(onIsLoading())
+    try {
+      //TODO colocar bien en endpoint
+      const {data} = await CSEPDeliveryApi.delete(`paquete/put/paquete/${dataPack.id}`)
+      return data
+    } catch (error) {
+      if (error.response.status == 400) {
+        var claves = Object.keys(error.response.data)
+        var firstValue = error.response.data[claves[0]]
+        dispatch(onSendErrorMessage(firstValue[0]))
+      } else {
+        dispatch(onSendServerErrorMessage(error.response.data.error))
+      }
+    }
+  }
+
   return {
     /* ATRIBUTOS */
     isLoading,
@@ -171,6 +194,7 @@ export const usePackagesStore = () => {
     startLoadPackages,
     startSetAcitvePackage,
     startSavingPackages,
+    startDeletePackage,
     startReport,
     startReportR,
     startReportU,

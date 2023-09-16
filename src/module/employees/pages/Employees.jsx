@@ -5,6 +5,7 @@ import { ModulesLayout } from "../../ui/ModulesLayout"
 import "./Employees.css"
 import { LoadingSpinner } from "../../../components"
 import ReactPaginate from "react-paginate"
+import Swal from "sweetalert2"
 
 export const Employees = () => {
   const {
@@ -12,10 +13,12 @@ export const Employees = () => {
     isLoading,
     startLoadEmployees,
     startSetAcitveEmployee,
+    startDeleteEmployees,
   } = useEmployeesStore()
   const navigate = useNavigate()
   const [searchTerm, setSearchTerm] = useState("")
   const [currentPage, setCurrentPage] = useState(0)
+  const [is_active, setIs_active] = useState(true)
   const itemsPerPage = 5
 
 
@@ -24,7 +27,7 @@ export const Employees = () => {
       item.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.cedula.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.cedula_ruc.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.email.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
@@ -39,7 +42,7 @@ export const Employees = () => {
   const onCreateEmployee = () => {
     startSetAcitveEmployee({
       id: 0,
-      cedula: "",
+      cedula_ruc: "",
       email: "",
       first_name: "",
       imagen:"",
@@ -55,11 +58,43 @@ export const Employees = () => {
     startSetAcitveEmployee(rowData)
     navigate("formEmployee")
   }
+  const onDeleteDeliberyAgent = async (rowData) => {
+    const mensaje = rowData.is_active ? "Archivar" : "Desarchivar"
+    const resp = await Swal.fire({
+      title: `Estas seguro que quieres ${mensaje} el Repartidor?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: mensaje
+    })
+    if (resp.isConfirmed) {
+      const data = await startDeleteEmployees(rowData)
+        if (data?.status){
+          Swal.fire(
+            data.msg,
+            '',
+            'success'
+          )
+        }
+        startLoadEmployees(is_active)
+    }
+  }
+  const changeState=()=>{
+    if (is_active){
+      setIs_active(false)
+    }else{
+      setIs_active(true)
+    }
+  }
 
   useEffect(() => {
-    startLoadEmployees()
     document.title = "Administradores"
   }, [])
+
+  useEffect(() => {
+    startLoadEmployees(is_active)
+  }, [is_active])
 
   if (isLoading === true) {
     return <LoadingSpinner />
@@ -71,6 +106,24 @@ export const Employees = () => {
         <div className="emloyees-header-left">
           <h2>Administradores</h2>
           <button onClick={onCreateEmployee}>Crear Administradores</button>
+          <div>
+          {
+                is_active ?
+                <>
+                <span className="material-symbols-outlined"
+                onClick={() => changeState()}>
+                  toggle_off
+              </span> Activos
+              </>
+              :
+              <>
+              <span className="material-symbols-outlined"
+                onClick={() => changeState()}>
+                  toggle_on
+              </span> Archivados
+              </>
+              }
+          </div>
         </div>
         <div className="emloyees-header-rigth">
           <input
@@ -104,7 +157,7 @@ export const Employees = () => {
               <th>Apellido</th>
               <th>Cedula</th>
               <th>Correo</th>
-              {/*<th>Opciones</th>*/}
+              <th>Opciones</th>
             </tr>
           </thead>
           <tbody>
@@ -114,19 +167,20 @@ export const Employees = () => {
                 <td>{rep.username}</td>
                 <td>{rep.first_name}</td>
                 <td>{rep.last_name}</td>
-                <td>{rep.cedula}</td>
+                <td>{rep.cedula_ruc}</td>
                 <td>{rep.email}</td>
-                {/*<td>
+                <td>
                   <span
                     className="material-symbols-outlined"
                     onClick={() => onUpdateEmployee(rep)}
                   >
                     edit
-                  </span>*/}
-                  {/*<span className="material-symbols-outlined">
+                  </span>
+                  <span className="material-symbols-outlined"
+                  onClick={() => onDeleteDeliberyAgent(rep)}>
                     disabled_by_default
                   </span>
-                </td>*/}
+                </td>
               </tr>
             ))}
           </tbody>

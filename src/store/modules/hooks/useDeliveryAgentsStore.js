@@ -9,10 +9,10 @@ export const useDeliveryAgentsStore = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const startLoadDeliveryAgents = async () => {
+  const startLoadDeliveryAgents = async (is_active) => {
     dispatch(onIsLoading())
     try {
-      const { data } = await CSEPDeliveryApi.get(`user/listarepartidor`);
+      const { data } = await CSEPDeliveryApi.get(`user/listarepartidor/${is_active}`);
       dispatch(onLoadDeliveryAgents(data))
     } catch (error) {
       console.log(error)
@@ -27,7 +27,7 @@ export const useDeliveryAgentsStore = () => {
     dispatch(onIsLoading())
     try {
       if (values.id) {
-        await CSEPDeliveryApi.put(`/user/post/repartidor/${values.id}`, values);
+        await CSEPDeliveryApi.put(`/user/update/repartidor/${values.id}`, values);
         dispatch(onUpdateDeliveryAgent(values));
         navigate('/deliveryAgents');
         return;
@@ -40,6 +40,23 @@ export const useDeliveryAgentsStore = () => {
       if (error.response.status == 400) {
         var claves = Object.keys(error.response.data);
         var firstValue = error.response.data[claves[0]];
+        dispatch(onSendErrorMessage(firstValue[0]))
+      } else {
+        dispatch(onSendServerErrorMessage(error.response.data.error))
+      }
+    }
+  }
+  const startDeleteDeliveryAgent = async (dataPack) => {
+    startSetAcitveDeliveryAgent(dataPack);
+    dispatch(onIsLoading())
+    try {
+      //TODO colocar bien en endpoint
+      const {data} = await CSEPDeliveryApi.delete(`/user/update/repartidor/${dataPack.id}`)
+      return data
+    } catch (error) {
+      if (error.response.status == 400) {
+        var claves = Object.keys(error.response.data)
+        var firstValue = error.response.data[claves[0]]
         dispatch(onSendErrorMessage(firstValue[0]))
       } else {
         dispatch(onSendServerErrorMessage(error.response.data.error))
@@ -60,5 +77,6 @@ export const useDeliveryAgentsStore = () => {
     startLoadDeliveryAgents,
     startSetAcitveDeliveryAgent,
     startSavingDeliveryAgents,
+    startDeleteDeliveryAgent,
   }
 }

@@ -7,6 +7,8 @@ import { LoadingSpinner } from "../../../components"
 import { useGetComboBox } from "../helpers/useGetComboBox"
 import ReactPaginate from "react-paginate"
 import "./Packages.css"
+import Swal from "sweetalert2"
+
 
 export const Packages = () => {
   const { remitente, repartidor: repart} = useGetComboBox()
@@ -16,6 +18,7 @@ export const Packages = () => {
 
   const [selectedPackage, setSelectedPackage] = useState(null);
   const [isBoxOpen, setIsBoxOpen] = useState(false);
+  const [paq_status, setPaq_status] = useState(1);
 
   const handleRowClick = (pack) => {
     setSelectedPackage(pack);
@@ -37,6 +40,7 @@ export const Packages = () => {
     user_add,
     startLoadPackages,
     startSetAcitvePackage,
+    startDeletePackage,
     startReport,
     startReportR,
     startReportU,
@@ -86,6 +90,47 @@ export const Packages = () => {
     startSetAcitvePackage(rowData)
     navigate("form")
   }
+
+  const onDeletePackage = async (rowData) => {
+    const mensaje = rowData.paq_active==1 ? "Archivar" : "Desarchivar"
+    const resp = await Swal.fire({
+      title: `Estas seguro que quieres ${mensaje} el producto?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: mensaje
+    })
+    if (resp.isConfirmed) {
+      const data = await startDeletePackage(rowData)
+        if (data?.status){
+          Swal.fire(
+            data.msg,
+            '',
+            'success'
+          )
+        }
+        startLoadPackages(paq_status)
+    }
+  }
+  const barCodeImage = (imageUrl) => {
+    Swal.fire({
+      imageUrl: imageUrl,
+      imageWidth: 400,
+      imageHeight: 200,
+      imageAlt: 'Custom image',
+      confirmButtonColor: '#3085d6',
+    })
+  }
+  const alertImage = (imageUrl) => {
+    Swal.fire({
+      imageUrl: imageUrl,
+      imageWidth: "auto",
+      imageHeight: 400,
+      imageAlt: 'Custom image',
+      confirmButtonColor: '#3085d6',
+    })
+  }
   const handleFechaInicioChange = (event) => {
     setFechaInicio(event.target.value)
   }
@@ -116,7 +161,6 @@ export const Packages = () => {
   }
 
   useEffect(() => {
-    startLoadPackages()
     document.title = "Paquetes"
     const today = new Date()
     const year = today.getFullYear()
@@ -127,8 +171,22 @@ export const Packages = () => {
     setFechaFin(formattedDate)
   }, [])
 
+  useEffect(() => {
+    startLoadPackages(paq_status)
+    
+  }, [paq_status])
+  
+
   if (isLoading) {
     return <LoadingSpinner />
+  }
+
+  const changeState=()=>{
+    if (paq_status==1){
+      setPaq_status(2)
+    }else{
+      setPaq_status(1)
+    }
   }
 
   return (
@@ -151,6 +209,23 @@ export const Packages = () => {
                   { value: "usuario", label: "Remitente" },
                 ]}
               />
+              {
+                paq_status==1 ?
+                <>
+                <span className="material-symbols-outlined"
+                onClick={() => changeState()}>
+                  toggle_off
+              </span> Activos
+              </>
+              :
+              <>
+              <span className="material-symbols-outlined"
+                onClick={() => changeState()}>
+                  toggle_on
+              </span> Archivados
+              </>
+              }
+              
               <div className="filtro">
                 {selectedOption && selectedOption.value === "fecha" && (
                   <div className="fecha">
@@ -266,10 +341,13 @@ export const Packages = () => {
             {dataToShow.map((pack) => (
               <tr key={pack.id} >
                 <td onClick={() => handleRowClick(pack)}>{pack.paq_numero}</td>
-                <td><a href={pack.paq_barCode} target="_blank"><img
+                <td>
+                  <img
                       id="bar-packages"
                       src={pack.paq_barCode}
-                    /></a></td>
+                      onClick={() => barCodeImage(pack.paq_barCode)}
+                    />
+                    </td>
                 <td>{pack.paq_estado}</td>
                 <td>{pack.full_name_user}</td>
                 <td>{pack.full_name_repartidor}</td>
@@ -306,6 +384,7 @@ export const Packages = () => {
                         ? "/img/paquete.png"
                         : pack.paq_imagen
                     }
+                    onClick={() => alertImage(pack.paq_imagen)}
                     alt="imagen"
                   />
                 </td>
@@ -316,9 +395,10 @@ export const Packages = () => {
                   >
                     edit
                   </span>
-                  {/*<span className="material-symbols-outlined">
+                  <span className="material-symbols-outlined"
+                  onClick={() => onDeletePackage(pack)}>
                     disabled_by_default
-                  </span>}*/}
+                  </span>
                 </td>
               </tr>
             ))}

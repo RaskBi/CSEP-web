@@ -93,7 +93,7 @@ export const DeliveryAgentsForm = () => {
             <div className="selected-image">
               <img
                 className="img-image"
-                src="/img/profile.png"
+                src={imagen?imagen:"/img/profile.png"} 
                 alt="Default Profile"
               />
             </div>

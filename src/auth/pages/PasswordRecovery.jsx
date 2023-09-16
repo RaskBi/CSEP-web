@@ -1,17 +1,54 @@
 import { Link } from "react-router-dom"
 import { useForm } from "../../hooks"
 import { AuthLayout } from "../layout"
+import { useChangePasswordStore } from "../../store/modules/hooks/useChangePasswordStore"
+import { LoadingSpinner } from "../../components"
+import Swal from "sweetalert2"
 
 import "./PasswordRecovery.css"
 
 const initialValues = {
-  email: "",
+  correo: "",
 }
 
 export const PasswordRecovery = () => {
-  const { email, onInputChange, formState } = useForm(initialValues)
+  const { correo, onInputChange, formState } = useForm(initialValues)
 
-  const onPasswordRecovery = () => {
+  const {
+    /* ATRIBUTOS */
+    isLoading,
+    /* METODOS */
+    navigate,
+    onStop,
+    onSendEmail,
+  } = useChangePasswordStore()
+  
+  const onPasswordRecovery = async (event) => {
+    event.preventDefault()
+    const data = await onSendEmail(formState)
+    if (data?.status===200){
+      Swal.fire(
+        data.data,
+        "",
+        "success"
+      )
+      navigate("/auth/login")
+    }
+    else{
+      Swal.fire(
+        data.data?.correo[0],
+        "",
+        "error"
+      )
+      onStop()
+    }
+
+  }
+
+
+  
+  if (isLoading === true) {
+    return <LoadingSpinner />
   }
 
   return (
@@ -26,8 +63,8 @@ export const PasswordRecovery = () => {
             <input
               type="email"
               placeholder="Ingrese su correo electrónico"
-              name="email"
-              value={email}
+              name="correo"
+              value={correo}
               onChange={onInputChange}
             />
             <button type="submit">Enviar</button>
