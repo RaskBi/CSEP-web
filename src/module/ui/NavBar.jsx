@@ -13,7 +13,8 @@ export const NavBar = () => {
           <li><NavLink className={({ isActive }) => ` ${isActive ? 'active' : ''}`} to="/"> Inicio</NavLink></li>
           <li><NavLink className={({ isActive }) => ` ${isActive ? 'active' : ''}`} to="package">Paquetes</NavLink></li>
           <li><NavLink className={({ isActive }) => ` ${isActive ? 'active' : ''}`} to="deliveryAgents">Repartidores</NavLink></li>
-          <li><NavLink className={({ isActive }) => ` ${isActive ? 'active' : ''}`} to="employees">Empleados</NavLink></li>
+          <li><NavLink className={({ isActive }) => ` ${isActive ? 'active' : ''}`} to="employees">Administradores</NavLink></li>
+          <li><NavLink className={({ isActive }) => ` ${isActive ? 'active' : ''}`} to="charts">Gráficas</NavLink></li>
         </ul>
       </div>
       <div className="nav-right">

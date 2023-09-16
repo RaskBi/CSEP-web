@@ -9,10 +9,10 @@ export const useEmployeesStore = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const startLoadEmployees = async () => {
+  const startLoadEmployees = async (is_active) => {
     dispatch(onIsLoading())
     try {
-      const { data } = await CSEPDeliveryApi.get(`user/listaadmin`);
+      const { data } = await CSEPDeliveryApi.get(`user/listaadmin/${is_active}`);
       dispatch(onLoadEmployees(data))
     } catch (error) {
       console.log(error)
@@ -27,9 +27,9 @@ export const useEmployeesStore = () => {
     dispatch(onIsLoading())
     try {
       if (values.id) {
-        await CSEPDeliveryApi.put(`user/post/admin/${values.id}`, values);
+        await CSEPDeliveryApi.put(`user/update/admin/${values.id}`, values);
         dispatch(onUpdateEmployee(values));
-        navigate('/employee');
+        navigate('/employees');
         return;
       }
       // Creando
@@ -40,6 +40,23 @@ export const useEmployeesStore = () => {
       if (error.response.status == 400) {
         var claves = Object.keys(error.response.data);
         var firstValue = error.response.data[claves[0]];
+        dispatch(onSendErrorMessage(firstValue[0]))
+      } else {
+        dispatch(onSendServerErrorMessage(error.response.data.error))
+      }
+    }
+  }
+  const startDeleteEmployees = async (dataPack) => {
+    startSetAcitveEmployee(dataPack);
+    dispatch(onIsLoading())
+    try {
+      //TODO colocar bien en endpoint
+      const {data} = await CSEPDeliveryApi.delete(`/user/update/admin/${dataPack.id}`)
+      return data
+    } catch (error) {
+      if (error.response.status == 400) {
+        var claves = Object.keys(error.response.data)
+        var firstValue = error.response.data[claves[0]]
         dispatch(onSendErrorMessage(firstValue[0]))
       } else {
         dispatch(onSendServerErrorMessage(error.response.data.error))
@@ -60,5 +77,6 @@ export const useEmployeesStore = () => {
     startLoadEmployees,
     startSetAcitveEmployee,
     startSavingEmployees,
+    startDeleteEmployees,
   }
 }

@@ -5,6 +5,7 @@ import { ModulesLayout } from "../../ui/ModulesLayout"
 import "./DeliveryAgents.css"
 import { LoadingSpinner } from "../../../components"
 import ReactPaginate from "react-paginate"
+import Swal from "sweetalert2"
 
 export const DeliveryAgents = () => {
   const {
@@ -12,17 +13,20 @@ export const DeliveryAgents = () => {
     isLoading,
     startLoadDeliveryAgents,
     startSetAcitveDeliveryAgent,
+    startDeleteDeliveryAgent,
   } = useDeliveryAgentsStore()
   const navigate = useNavigate()
   const [searchTerm, setSearchTerm] = useState("")
   const [currentPage, setCurrentPage] = useState(0)
-  const itemsPerPage = 7
+  const [is_active, setIs_active] = useState(true)
+  const itemsPerPage = 5
 
   const filteredData = deliveryAgents.filter(
     (item) =>
       item.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.cedula_ruc.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.email.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
@@ -37,11 +41,14 @@ export const DeliveryAgents = () => {
   const onCreateDeliveryAgent = () => {
     startSetAcitveDeliveryAgent({
       id: 0,
-      first_name: "",
-      last_name: "",
-      username: "",
+      cedula_ruc: "",
       email: "",
+      first_name: "",
+      imagen:"",
+      last_name: "",
       password: "",
+      imagen_upload: { change: false, b64: "", ext: "" },
+      username: "",
     })
     navigate("formDelivery")
   }
@@ -50,12 +57,46 @@ export const DeliveryAgents = () => {
     startSetAcitveDeliveryAgent(rowData)
     navigate("formDelivery")
   }
+  const onDeleteDeliberyAgent = async (rowData) => {
+    const mensaje = rowData.is_active ? "Archivar" : "Desarchivar"
+    const resp = await Swal.fire({
+      title: `Estas seguro que quieres ${mensaje} el Repartidor?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: mensaje
+    })
+    if (resp.isConfirmed) {
+      const data = await startDeleteDeliveryAgent(rowData)
+        if (data?.status){
+          Swal.fire(
+            data.msg,
+            '',
+            'success'
+          )
+        }
+        startLoadDeliveryAgents(is_active)
+    }
+  }
+
+  const changeState=()=>{
+    if (is_active){
+      setIs_active(false)
+    }else{
+      setIs_active(true)
+    }
+  }
 
   useEffect(() => {
-    startLoadDeliveryAgents()
+    
     document.title = "Repartidores"
   }, [])
-
+  
+  useEffect(() => {
+    startLoadDeliveryAgents(is_active)
+  }, [is_active])
+  
   if (isLoading === true) {
     return <LoadingSpinner />
   }
@@ -66,6 +107,25 @@ export const DeliveryAgents = () => {
         <div className="delibery-header-left">
           <h2>Repartidores</h2>
           <button onClick={onCreateDeliveryAgent}>Crear repartidores</button>
+          <div>
+          {
+                is_active ?
+                <>
+                <span className="material-symbols-outlined"
+                onClick={() => changeState()}>
+                  toggle_off
+              </span> Activos
+              </>
+              :
+              <>
+              <span className="material-symbols-outlined"
+                onClick={() => changeState()}>
+                  toggle_on
+              </span> Archivados
+              </>
+              }
+          </div>
+          
         </div>
         <div className="delibery-header-rigth">
           <input
@@ -93,9 +153,11 @@ export const DeliveryAgents = () => {
         <table className="delibery-content-table">
           <thead>
             <tr>
+              <th>Foto</th>
               <th>Username</th>
               <th>Nombre</th>
               <th>Apellido</th>
+              <th>Cedula</th>
               <th>Correo</th>
               <th>Opciones</th>
             </tr>
@@ -103,9 +165,11 @@ export const DeliveryAgents = () => {
           <tbody>
             {dataToShow.map((rep) => (
               <tr key={rep.id}>
+              <td><img id="img-packages" src={rep.imagen} style={{ borderRadius: "100%" }} alt=""/></td>
                 <td>{rep.username}</td>
                 <td>{rep.first_name}</td>
                 <td>{rep.last_name}</td>
+                <td>{rep.cedula_ruc}</td>
                 <td>{rep.email}</td>
                 <td>
                   <span
@@ -114,9 +178,10 @@ export const DeliveryAgents = () => {
                   >
                     edit
                   </span>
-                  {/*<span className="material-symbols-outlined">
+                  <span className="material-symbols-outlined"
+                  onClick={() => onDeleteDeliberyAgent(rep)}>
                     disabled_by_default
-                  </span>*/}
+                  </span>
                 </td>
               </tr>
             ))}

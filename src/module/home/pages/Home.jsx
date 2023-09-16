@@ -7,7 +7,7 @@ import { useAuthStore } from "../../../store/auth/useAuthStore"
 export const Home = () => {
   const navigate = useNavigate()
   const [hoveredItem, setHoveredItem] = useState(null)
-  const {user} = useAuthStore();
+  const { user } = useAuthStore()
 
   const handleMouseEnter = (index) => {
     setHoveredItem(index)
@@ -24,7 +24,9 @@ export const Home = () => {
     <ModulesLayout>
       <div className="home">
         <div className="home-welcome">
-          <h1>¡Bienvenido {user.first_name} {user.last_name}!</h1>
+          <h1>
+            ¡Bienvenido {user.first_name} {user.last_name}!
+          </h1>
 
           <div className="home-welcome-modules">
             <div
@@ -72,21 +74,24 @@ export const Home = () => {
               }`}
               onMouseEnter={() => handleMouseEnter(3)}
               onMouseLeave={handleMouseLeave}
+              onClick={() => {
+                navigate("charts")
+              }}
             >
-              <h4>Cuenta</h4>
-              <img src="/img/userSettings.png" alt="" />
+              <h4>Gráficas</h4>
+              <img src="/img/charts.png" alt="" />
             </div>
           </div>
         </div>
         <div className="container">
-        <div className="home-information">
-          <img src="/img/logo.png" alt="paquete" />
-          <h3>Administra tus paquetes</h3>
-          <span>
-            Aquí puedes controlar y gestionar repartidores, paquetes, usuarios y
-            detalles de tu cuenta.
-          </span>
-        </div>
+          <div className="home-information">
+            <img src="/img/logo.png" alt="paquete" />
+            <h3>Administra tus paquetes</h3>
+            <span>
+            <a href="https://docs.google.com/presentation/d/1rhQ0rFeXepUS_GmUQZKTgPT90hRZIAlNIGcM0gHZeZA/edit?usp=sharing" target="_blank" rel="noreferrer">►</a>Aquí puedes controlar y gestionar repartidores, paquetes, usuarios
+              y detalles de tu cuenta<a href="https://docs.google.com/document/d/16-QIa0O6A03X8Qj4fDF1Rk5NMe1w4uMH/edit" target="_blank" rel="noreferrer">►</a>.
+            </span>
+          </div>
         </div>
       </div>
     </ModulesLayout>

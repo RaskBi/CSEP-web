@@ -7,12 +7,27 @@ import { LoadingSpinner } from "../../../components"
 import { useGetComboBox } from "../helpers/useGetComboBox"
 import ReactPaginate from "react-paginate"
 import "./Packages.css"
+import Swal from "sweetalert2"
+
 
 export const Packages = () => {
   const { remitente, repartidor: repart} = useGetComboBox()
   const [selectedOption, setSelectedOption] = useState(null)
   const [selectRepartidor, setSelectRepartidor] = useState({})
   const [selectUsuario, setSelectUsuario] = useState({})
+
+  const [selectedPackage, setSelectedPackage] = useState(null);
+  const [isBoxOpen, setIsBoxOpen] = useState(false);
+  const [paq_status, setPaq_status] = useState(1);
+
+  const handleRowClick = (pack) => {
+    setSelectedPackage(pack);
+    setIsBoxOpen(true);
+  };
+
+  const onCloseBox = () => {
+    setIsBoxOpen(false);
+  };
 
   const handleChange = (option) => {
     setSelectedOption(option)
@@ -25,6 +40,7 @@ export const Packages = () => {
     user_add,
     startLoadPackages,
     startSetAcitvePackage,
+    startDeletePackage,
     startReport,
     startReportR,
     startReportU,
@@ -74,6 +90,47 @@ export const Packages = () => {
     startSetAcitvePackage(rowData)
     navigate("form")
   }
+
+  const onDeletePackage = async (rowData) => {
+    const mensaje = rowData.paq_active==1 ? "Archivar" : "Desarchivar"
+    const resp = await Swal.fire({
+      title: `Estas seguro que quieres ${mensaje} el producto?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: mensaje
+    })
+    if (resp.isConfirmed) {
+      const data = await startDeletePackage(rowData)
+        if (data?.status){
+          Swal.fire(
+            data.msg,
+            '',
+            'success'
+          )
+        }
+        startLoadPackages(paq_status)
+    }
+  }
+  const barCodeImage = (imageUrl) => {
+    Swal.fire({
+      imageUrl: imageUrl,
+      imageWidth: 400,
+      imageHeight: 200,
+      imageAlt: 'Custom image',
+      confirmButtonColor: '#3085d6',
+    })
+  }
+  const alertImage = (imageUrl) => {
+    Swal.fire({
+      imageUrl: imageUrl,
+      imageWidth: "auto",
+      imageHeight: 400,
+      imageAlt: 'Custom image',
+      confirmButtonColor: '#3085d6',
+    })
+  }
   const handleFechaInicioChange = (event) => {
     setFechaInicio(event.target.value)
   }
@@ -104,7 +161,6 @@ export const Packages = () => {
   }
 
   useEffect(() => {
-    startLoadPackages()
     document.title = "Paquetes"
     const today = new Date()
     const year = today.getFullYear()
@@ -115,8 +171,22 @@ export const Packages = () => {
     setFechaFin(formattedDate)
   }, [])
 
+  useEffect(() => {
+    startLoadPackages(paq_status)
+    
+  }, [paq_status])
+  
+
   if (isLoading) {
     return <LoadingSpinner />
+  }
+
+  const changeState=()=>{
+    if (paq_status==1){
+      setPaq_status(2)
+    }else{
+      setPaq_status(1)
+    }
   }
 
   return (
@@ -139,6 +209,23 @@ export const Packages = () => {
                   { value: "usuario", label: "Remitente" },
                 ]}
               />
+              {
+                paq_status==1 ?
+                <>
+                <span className="material-symbols-outlined"
+                onClick={() => changeState()}>
+                  toggle_off
+              </span> Activos
+              </>
+              :
+              <>
+              <span className="material-symbols-outlined"
+                onClick={() => changeState()}>
+                  toggle_on
+              </span> Archivados
+              </>
+              }
+              
               <div className="filtro">
                 {selectedOption && selectedOption.value === "fecha" && (
                   <div className="fecha">
@@ -235,6 +322,7 @@ export const Packages = () => {
           <thead>
             <tr>
               <th>Guia</th>
+              <th>BarCode</th>
               <th>Estado</th>
               <th>Remitente</th>
               <th>Repartidor</th>
@@ -251,8 +339,15 @@ export const Packages = () => {
           </thead>
           <tbody>
             {dataToShow.map((pack) => (
-              <tr key={pack.id}>
-                <td>{pack.paq_numero}</td>
+              <tr key={pack.id} >
+                <td onClick={() => handleRowClick(pack)}>{pack.paq_numero}</td>
+                <td>
+                  <img
+                      id="bar-packages"
+                      src={pack.paq_barCode}
+                      onClick={() => barCodeImage(pack.paq_barCode)}
+                    />
+                    </td>
                 <td>{pack.paq_estado}</td>
                 <td>{pack.full_name_user}</td>
                 <td>{pack.full_name_repartidor}</td>
@@ -265,7 +360,7 @@ export const Packages = () => {
                   {pack.paq_fechaConfirmacion == null ? (
                     <img
                       width="70px"
-                      src="https://i.gifer.com/origin/6a/6a2dfb96f278692f0900cc08975efe0e_w200.webp"
+                      src="https://media.tenor.com/se7cU4QJ0KAAAAAi/delivery.gif"
                     />
                   ) : (
                     pack.paq_fechaConfirmacion
@@ -275,7 +370,7 @@ export const Packages = () => {
                   {pack.paq_horaConfirmacion == null ? (
                     <img
                       width="70px"
-                      src="https://i.gifer.com/origin/6a/6a2dfb96f278692f0900cc08975efe0e_w200.webp"
+                      src="https://media.tenor.com/se7cU4QJ0KAAAAAi/delivery.gif"
                     />
                   ) : (
                     pack.paq_horaConfirmacion
@@ -289,6 +384,7 @@ export const Packages = () => {
                         ? "/img/paquete.png"
                         : pack.paq_imagen
                     }
+                    onClick={() => alertImage(pack.paq_imagen)}
                     alt="imagen"
                   />
                 </td>
@@ -299,15 +395,48 @@ export const Packages = () => {
                   >
                     edit
                   </span>
-                  {/*<span className="material-symbols-outlined">
+                  <span className="material-symbols-outlined"
+                  onClick={() => onDeletePackage(pack)}>
                     disabled_by_default
-                  </span>}*/}
+                  </span>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      {/* Cuadro modal para mostrar los detalles del paquete seleccionado */}
+      {isBoxOpen && selectedPackage && (
+        <div className="modal-box">
+          <div className="modal-content">
+            <h2>Detalles del Paquete</h2>
+            <div className="modal-content-columns">
+              <div className="modal-column">
+                <p><strong>Guia:</strong> {selectedPackage.paq_numero}</p>
+                <p><strong>Estado:</strong> {selectedPackage.paq_estado}</p>
+                <p><strong>Remitente:</strong> {selectedPackage.full_name_user}</p>
+                <p><strong>Repartidor:</strong> {selectedPackage.full_name_repartidor}</p>
+                <p><strong>Dirección:</strong> {selectedPackage.paq_direccion}</p>
+                <p><strong>Teléfono:</strong> {selectedPackage.paq_telefono}</p>
+                <p><strong>Costo:</strong> ${selectedPackage.paq_precio}</p>
+              </div>
+              <div className="modal-column">
+                <p><strong>Fecha de envío:</strong> {selectedPackage.paq_fechaCreacion}</p>
+                <p><strong>Hora de envío:</strong> {selectedPackage.paq_horaCreacion}</p>
+                <p><strong>Fecha de recepción:</strong> {selectedPackage.paq_fechaConfirmacion || "No disponible"}</p>
+                <p><strong>Hora de recepción:</strong> {selectedPackage.paq_horaConfirmacion || "No disponible"}</p>
+              </div>
+            </div>
+                <p><strong>Foto de entrega:</strong></p>
+                <img
+                  id="img-packages-modal"
+                  src={selectedPackage.paq_imagen === null ? "/img/paquete.png" : selectedPackage.paq_imagen}
+                  alt="imagen"
+                />
+            <button onClick={onCloseBox}>Cerrar</button>
+          </div>
+        </div>
+      )}
     </ModulesLayout>
   )
 }

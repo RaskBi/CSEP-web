@@ -27,8 +27,8 @@ export const useAuthStore = () => {
         try {
             const { data } = await CSEPDeliveryApi.get('user/profile');
             //localStorage.setItem("Token", data.token);
-            dispatch(login({...data, imagen:"http://186.33.132.4:81/media/user/user_Admin1.jpg"} ));
-            //PEDIRLE AL BACKEND QUE Traiga imagen, BORRA  LA IMAGEN
+            dispatch(login(data ));
+            //PEDIRLE AL BACKEND QUE Traiga imagen, BORRAR  LA IMAGEN
         } catch (error) {
             console.log(error)
             localStorage.clear();

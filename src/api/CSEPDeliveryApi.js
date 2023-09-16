@@ -1,7 +1,8 @@
 import axios from "axios";
 
+const baseURL = "http://186.33.132.4:81/";
 export const CSEPDeliveryApi = axios.create({
-    baseURL: "http://186.33.132.4:81/"
+    baseURL: baseURL
 });
 
 // Todo: configurar interceptores
@@ -12,3 +13,5 @@ CSEPDeliveryApi.interceptors.request.use( config => {
     }
     return config;
 })
+
+export const apiURL = baseURL
