@@ -105,9 +105,11 @@ export const DeliveryAgents = () => {
     <ModulesLayout>
       <div className="delibery-header">
         <div className="delibery-header-left">
-          <h2>Repartidores</h2>
-          <button onClick={onCreateDeliveryAgent}>Crear repartidores</button>
           <div>
+            <h2>Repartidores</h2>
+            <button onClick={onCreateDeliveryAgent}>Crear repartidores</button>
+          </div>
+          <div className="delibery-header-left-switch">
           {
                 is_active ?
                 <>

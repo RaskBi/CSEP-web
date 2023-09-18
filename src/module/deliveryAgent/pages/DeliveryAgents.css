@@ -12,9 +12,13 @@
   display: flex;
   width: 50%;
   padding: 20px;
-  align-items: start;
-  justify-content: center;
+  align-items: center;
+}
+
+.delibery-header-left-switch{
+  display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 .delibery-header-left h2 {

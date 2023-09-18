@@ -5,6 +5,7 @@ import Search from "react-leaflet-search"
 import Select from "react-select"
 import { LatLng } from "leaflet"
 import { LatLngBounds } from "leaflet"
+import L from 'leaflet';
 
 import { ModulesLayout } from "../../ui/ModulesLayout"
 import { useForm } from "../../../hooks/useForm"
@@ -13,6 +14,7 @@ import { usePackagesStore } from "../../../store/modules/hooks/usePackagesStore"
 import { LoadingSpinner } from "../../../components"
 
 import "leaflet/dist/leaflet.css"
+import 'react-leaflet-search/css/index.css';
 import "./PackagesForm.css"
 // Mapa
 const defaultZoom = 15
@@ -27,6 +29,13 @@ export const PackagesForm = () => {
     [-90, -180],
     [90, 180],
   ])
+  const markerIcon = L.icon({
+    iconUrl: '/icons/pin.png',
+    iconSize: [35, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [0, -41],
+    tooltipAnchor: [12, -28],
+  });
   const providerOptions = {
     searchBounds: new LatLngBounds(
       [-90, -180], // Southwest corner
@@ -34,6 +43,7 @@ export const PackagesForm = () => {
     ),
     region: "ec", // Set the region to Ecuador
   }
+
   const [lati, setlat] = useState("")
   const [long, setlong] = useState("")
 
@@ -226,7 +236,7 @@ export const PackagesForm = () => {
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
             {markerPosition && (
-              <Marker position={markerPosition}>
+              <Marker position={markerPosition} icon={markerIcon}>
                 <Popup>
                   Latitude: {markerPosition[0]}, Longitude: {markerPosition[1]}
                 </Popup>
@@ -238,6 +248,7 @@ export const PackagesForm = () => {
               zoom={17}
               closeResultsOnClick={true}
               providerOptions={providerOptions}
+              markerIcon={markerIcon}
             />
           </Map>
         </div>

@@ -57,6 +57,8 @@ export const Packages = () => {
       item.paq_numero.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.paq_estado.includes(searchTerm) ||
       item.user.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.full_name_repartidor.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.full_name_user.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.repartidor.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.paq_direccion.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.paq_fechaCreacion.toLowerCase().includes(searchTerm.toLowerCase())
@@ -197,19 +199,8 @@ export const Packages = () => {
             <h2>Paquetes</h2>
             <button onClick={onCreatePackage}>Crear paquete</button>
           </div>
-          <div className="packages-header-leftR-reporte">
-            <div className="comboboxFiltro">
-              <Select
-                value={selectedOption}
-                placeholder="Filtrar reporte por..."
-                onChange={handleChange}
-                options={[
-                  { value: "fecha", label: "Fecha" },
-                  { value: "repartidor", label: "Repartidor" },
-                  { value: "usuario", label: "Remitente" },
-                ]}
-              />
-              {
+          <div className="packages-header-left-switch">
+          {
                 paq_status==1 ?
                 <>
                 <span className="material-symbols-outlined"
@@ -225,6 +216,20 @@ export const Packages = () => {
               </span> Archivados
               </>
               }
+          </div>
+          <div className="packages-header-leftR-reporte">
+            <div className="comboboxFiltro">
+              <Select
+                value={selectedOption}
+                placeholder="Filtrar reporte por..."
+                onChange={handleChange}
+                options={[
+                  { value: "fecha", label: "Fecha" },
+                  { value: "repartidor", label: "Repartidor" },
+                  { value: "usuario", label: "Remitente" },
+                ]}
+              />
+              
               
               <div className="filtro">
                 {selectedOption && selectedOption.value === "fecha" && (

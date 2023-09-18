@@ -16,6 +16,11 @@
   align-items: center;
   justify-content: space-between;
 }
+.packages-header-left-switch{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .packages-header-leftR{
   display: flex;
   width: 75%;

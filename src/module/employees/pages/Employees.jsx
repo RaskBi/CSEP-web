@@ -104,9 +104,11 @@ export const Employees = () => {
     <ModulesLayout>
       <div className="emloyees-header">
         <div className="emloyees-header-left">
-          <h2>Administradores</h2>
-          <button onClick={onCreateEmployee}>Crear Administradores</button>
           <div>
+            <h2>Administradores</h2>
+            <button onClick={onCreateEmployee}>Crear Administradores</button>
+          </div>
+          <div className="emloyees-header-left-switch">
           {
                 is_active ?
                 <>
