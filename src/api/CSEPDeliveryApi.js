@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "http://186.33.132.4:81/";
+const baseURL = "http://154.12.236.19:804/";
 export const CSEPDeliveryApi = axios.create({
     baseURL: baseURL
 });

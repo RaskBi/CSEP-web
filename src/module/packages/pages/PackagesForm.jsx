@@ -30,7 +30,7 @@ export const PackagesForm = () => {
     [90, 180],
   ])
   const markerIcon = L.icon({
-    iconUrl: '/icons/pin.png',
+    iconUrl: '/img/pin.png',
     iconSize: [35, 41],
     iconAnchor: [12, 41],
     popupAnchor: [0, -41],
